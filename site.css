@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,300&display=swap');
+body{
+    font-family: 'Poppins', 'sans-serif';
+    color: white;
+    background-color:#0c1022;
+}
+
+.nav{
+    display: flex;
+    justify-content: space-around;
+    color: #fff;
+    font-family: 'Poppins', 'sans-serif';
+}
+.nav ul{
+    width:700px;
+    height: 50px;
+    margin: 29px 20px;
+}
+.nav ul li{
+    width: 100px;
+    height: 30px;
+    display: inline-block;
+    text-align: center;
+    margin: 0 30px;
+    border: solid;
+    border-width: 2px;
+    border-color: rgb(208, 208, 224);
+    border-radius: 7px;
+    color: #cfd5fc;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+nav a:hover{
+    color: rgb(0, 166, 255);
+}
+
+.home{
+    width: 1100px;
+    height: 300px;
+    display: flex; 
+    justify-content: space-between;    
+    align-items: center;        
+    margin: 0px 70px;
+}
+.home-content h1{
+    font-size: 55px;
+    font-weight: 600;
+}
+.home-content h3{
+    font-weight: 300;
+}
+.home-content{
+    max-width: 500px;
+}
+
+img{
+
+    width: 130%;
+    height: 130%;
+    border-radius: 55%;
+    border: 5px solid rgb(23, 2, 117);
+}
+
+/*.who {
+    A blue box with rounded corners div
+    text-align: center;
+    background-color:  rgb(168, 209, 255);
+    border: solid;
+    border-width: 2px;
+    border-color: Blue;
+    margin: 1px 2px 15px 2px;
+    border-radius: 20px;
+    font-family: Verdana, Geneva, sans-serif;
+  }
+  */
+
+  
