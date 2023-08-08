@@ -2,7 +2,7 @@
 body{
     font-family: 'Poppins', 'sans-serif';
     color: white;
-    background-color:#0c1022;
+    background-color:#0f142c;
 }
 
 .nav{
@@ -65,5 +65,6 @@ img{
     width: 220%;
     height: 200%;
     border-radius: 55%;
-    border: 5px solid rgb(23, 2, 117);
+    border: 5px solid #0f142c;
+    opacity: 0.7;
 }

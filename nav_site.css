@@ -2,5 +2,9 @@
 body{
     font-family: 'Poppins', 'sans-serif';
     color: white;
-    background-color:#0c1022;
+    background-color:#0f142c;
+}
+
+h1{
+    text-align: center;
 }
