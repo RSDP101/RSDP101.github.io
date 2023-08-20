@@ -1,10 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,300&display=swap');
-body{
-    font-family: 'Poppins', 'sans-serif';
-    color: white;
-    background-color:#0f142c;
-}
-
 h1{
     text-align: center;
+}
+
+.contact-info{
+    text-align: center;
+}
+
+.list{
+    margin-left: 30px;
+}
+.list2{
+    margin-left: 30px;
+    margin-top: 40px;
 }
