@@ -8,9 +8,9 @@
 
 # Basic Site Settings
 locale                   : "en-US"
-title                    : "Your Name / Site Title"
+title                    : "Rodrigo Porto's website"
 title_separator          : "-"
-name                     : &name "Your Name"
+name                     : &name "Rodrigo"
 description              : &description "personal description"
 url                      : https://RSDP101.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
@@ -21,14 +21,14 @@ repository               : "academicpages/academicpages.github.io"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "profile.png"
-  name             : "Your Sidebar Name"
+  avatar           : "my_photo.jpg"
+  name             : "Rodrigo Porto"
   pronouns         : # example: "she/her"  
-  bio              : "Short biography for the left-hand sidebar"
-  location         : "Earth"
-  employer         : "Red Brick University"
+  bio              : "Love Math and Machine Learning!"
+  location         : "Rio de Janeiro, Brazil"
+  employer         : "Princeton University"
   uri              : # URL
-  email            : "none@example.org" 
+  email            : "rodrigo.porto@princeton.edu" 
 
   # Academic websites
   arxiv            : # URL - Update with the correct link to your profile
