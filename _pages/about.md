@@ -13,6 +13,7 @@ Hi! I'm Rodrigo.
 
 I am an undergraduate student at Princeton University, studying Mathematics and Computer Science. My interests range from Probability Theory and Discrete Mathematics to Machine Learning, Computer Vision and Natural Language Processing. 
 
+'''
 Publications:
 =====
 
@@ -21,7 +22,6 @@ Here are some publications...
 CV:
 =====
 [Download my CV (PDF)]({{ '/cv.pdf' | relative_url }}){:target="_blank" download="cv.pdf"}
-[Download my CV (PDF)]({{ '_pages/cv.pdf' | relative_url }}){:target="_blank" download="cv.pdf"}
 
 
 Courses:
