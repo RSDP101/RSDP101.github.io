@@ -21,6 +21,7 @@ Here are some publications...
 CV:
 =====
 [Download my CV (PDF)]({{ '/cv.pdf' | relative_url }}){:target="_blank" download="cv.pdf"}
+[Download my CV (PDF)]({{ '_pages/cv.pdf' | relative_url }}){:target="_blank" download="cv.pdf"}
 
 
 Courses:
