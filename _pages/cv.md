@@ -9,7 +9,7 @@ redirect_from:
 
 {% include base_path %}
 
-[Download my CV (PDF)]({{ '/_pages/cv.pdf' | relative_url }}){:target="_blank" download="cv.pdf"}
+[Download my CV (PDF)]({{ '/cv.pdf' | relative_url }}){:target="_blank" download="cv.pdf"}
 
 Education
 ======
