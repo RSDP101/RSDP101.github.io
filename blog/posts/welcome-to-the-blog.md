@@ -47,5 +47,3 @@ And a blockquote, because every blog post needs one eventually:
 The next post will probably be about something concrete — maybe a walk-through of the Pareto frontier figure from *Escaping the Cognitive Well*, or a note on why blueprint refinement helps in formal theorem proving. Whichever I get bored with first.
 
 If you have something you'd like me to write about, find me at [rodrigaosdp@gmail.com](mailto:rodrigaosdp@gmail.com).
-
-— Rodrigo
