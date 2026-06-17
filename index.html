@@ -1,39 +1,223 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rodrigo Porto</title>
-<style>
-  :root { color-scheme: light dark; }
-  html, body { margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.55;
-    max-width: 38rem;
-    margin: 4rem auto;
-    padding: 0 1.25rem;
-    color: #222;
-    background: #fafafa;
-  }
-  @media (prefers-color-scheme: dark) {
-    body { color: #e6e6e6; background: #111; }
-    a { color: #6ab7ff; }
-  }
-  h1 { font-size: 1.8rem; margin: 0 0 0.5rem; }
-  p { margin: 0 0 1rem; }
-  ul { list-style: none; padding: 0; margin: 1.5rem 0 0; }
-  li { margin: 0.35rem 0; }
-  a { color: #0366d6; text-decoration: none; }
-  a:hover { text-decoration: underline; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rodrigo Porto</title>
+  <meta name="description" content="Rodrigo Porto. Princeton Math '27. Research on LLMs for mathematics.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.4/css/academicons.min.css">
+  <style>
+    :root {
+      --text: #1a1a1a;
+      --muted: #6b6b6b;
+      --link: #b31b1b;
+      --link-hover: #8a1414;
+      --border: #e8e8e8;
+      --bg: #ffffff;
+      --bg-alt: #fafafa;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text: #e6e6e6;
+        --muted: #9a9a9a;
+        --link: #ff7575;
+        --link-hover: #ffa1a1;
+        --border: #2a2a2a;
+        --bg: #0f0f0f;
+        --bg-alt: #161616;
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 780px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
+
+    nav.top {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 1.1rem;
+      padding: 0.5rem 0 2rem;
+      font-size: 1.15rem;
+    }
+    nav.top a {
+      color: var(--muted);
+      transition: color 0.15s ease;
+    }
+    nav.top a:hover { color: var(--link); }
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { color: var(--link-hover); text-decoration: underline; }
+
+    h1.name {
+      font-size: 2.4rem;
+      font-weight: 300;
+      margin: 0 0 0.2rem;
+      letter-spacing: -0.015em;
+    }
+    h1.name strong { font-weight: 700; }
+    p.desc {
+      color: var(--muted);
+      font-size: 1rem;
+      margin: 0 0 1.75rem;
+    }
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin: 2.75rem 0 1rem;
+      letter-spacing: -0.01em;
+    }
+    p { margin: 0 0 1rem; }
+    ul { padding-left: 1.25rem; margin: 0 0 1rem; }
+    li { margin: 0.3rem 0; }
+
+    .pub {
+      padding: 1.2rem 0;
+      border-top: 1px solid var(--border);
+    }
+    .pub:last-child { border-bottom: 1px solid var(--border); }
+    .pub .title { font-weight: 600; font-size: 1.02rem; line-height: 1.35; margin-bottom: 0.3rem; }
+    .pub .authors { color: var(--muted); font-size: 0.94rem; margin-bottom: 0.2rem; }
+    .pub .authors .me { color: var(--text); font-weight: 600; }
+    .pub .venue { color: var(--muted); font-size: 0.92rem; font-style: italic; }
+    .pub .links { margin-top: 0.6rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .pub .links a {
+      display: inline-block;
+      padding: 0.2rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.85rem;
+      color: var(--text);
+      background: var(--bg-alt);
+      transition: all 0.15s ease;
+    }
+    .pub .links a:hover {
+      color: var(--link);
+      border-color: var(--link);
+      text-decoration: none;
+    }
+
+    .highlights .row {
+      display: grid;
+      grid-template-columns: 7rem 1fr;
+      gap: 1rem;
+      padding: 0.8rem 0;
+      border-top: 1px solid var(--border);
+      font-size: 0.97rem;
+    }
+    .highlights .row:last-child { border-bottom: 1px solid var(--border); }
+    .highlights .date {
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      font-size: 0.92rem;
+    }
+
+    footer {
+      margin-top: 3rem;
+      color: var(--muted);
+      font-size: 0.83rem;
+      text-align: center;
+    }
+
+    @media (max-width: 560px) {
+      .container { padding-top: 1rem; }
+      h1.name { font-size: 1.9rem; }
+      .highlights .row { grid-template-columns: 1fr; gap: 0.1rem; padding: 0.7rem 0; }
+      .highlights .date { font-size: 0.85rem; }
+      nav.top { gap: 0.9rem; font-size: 1.05rem; }
+    }
+  </style>
 </head>
 <body>
-  <h1>Rodrigo Porto</h1>
-  <p>Personal site &mdash; more coming soon.</p>
-  <ul>
-    <li><a href="https://github.com/RSDP101">GitHub</a></li>
-    <li><a href="mailto:rodrigaosdp@gmail.com">rodrigaosdp@gmail.com</a></li>
-  </ul>
+<div class="container">
+  <nav class="top">
+    <a href="mailto:rodrigaosdp@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
+    <a href="https://scholar.google.com/citations?user=V8AUv-gAAAAJ&amp;hl=en" title="Google Scholar" target="_blank" rel="noopener"><i class="ai ai-google-scholar"></i></a>
+    <a href="https://github.com/RSDP101" title="GitHub" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i></a>
+    <a href="https://www.linkedin.com/in/rodrigo-porto-760150169" title="LinkedIn" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i></a>
+  </nav>
+
+  <header>
+    <h1 class="name"><strong>Rodrigo</strong> Porto</h1>
+    <p class="desc">Princeton Math '27</p>
+  </header>
+
+  <section>
+    <p>Hi! I'm Rodrigo, a junior at Princeton studying Mathematics with minors in Statistics &amp; Machine Learning. I'm broadly interested in large language models for mathematics &mdash; improving reasoning, formal theorem proving, and the gap between competition-style math and real research math.</p>
+
+    <p>Some notable things worth mentioning:</p>
+    <ul>
+      <li>Research at Princeton with Prof. <a href="https://www.cs.princeton.edu/~arora/" target="_blank" rel="noopener">Sanjeev Arora</a>'s group on LLM math reasoning and formal theorem proving (see <a href="https://arxiv.org/abs/2602.16793" target="_blank" rel="noopener">Escaping the Cognitive Well</a> and <a href="https://arxiv.org/abs/2606.06468" target="_blank" rel="noopener">Goedel-Architect</a>).</li>
+      <li>Currently a Quant Researcher at Vigil Labs, working on systematic trading signals and information-value scoring for X.</li>
+      <li>Previously SWE intern at <a href="https://www.amazon.com" target="_blank" rel="noopener">Amazon</a> (global inventory systems) and Hillspire LLC (mobile apps and diffusion-model infrastructure).</li>
+      <li>Twice awarded the <strong>Shapiro Prize</strong> for academic excellence at Princeton.</li>
+    </ul>
+
+    <p>Reach out at <a href="mailto:rodrigaosdp@gmail.com">rodrigaosdp [at] gmail [dot] com</a>.</p>
+  </section>
+
+  <section>
+    <h2>selected publications</h2>
+
+    <div class="pub">
+      <div class="title">Escaping the Cognitive Well: Efficient Competition Math with Off-the-Shelf Models</div>
+      <div class="authors">Xingyu Dang, Rohit Agarwal, <span class="me">Rodrigo Porto</span>, Anirudh Goyal, Liam H. Fowl, Sanjeev Arora</div>
+      <div class="venue">arXiv preprint, 2026</div>
+      <div class="links">
+        <a href="https://arxiv.org/abs/2602.16793" target="_blank" rel="noopener">arXiv</a>
+      </div>
+    </div>
+
+    <div class="pub">
+      <div class="title">Goedel-Architect: Streamlining Formal Theorem Proving with Blueprint Generation and Refinement</div>
+      <div class="authors">Jui-Hui Chung, Ziyang Cai, Zihao Li, Qishuo Yin, Rohit Agarwal, Simon Park, <span class="me">Rodrigo Porto</span>, Narutatsu Ri, Ziran Yang, Shange Tang, Xingyu Dang, Hongzhou Lin, Mengdi Wang, Danqi Chen, Chi Jin, Liam H. Fowl, Sanjeev Arora</div>
+      <div class="venue">arXiv preprint, 2026</div>
+      <div class="links">
+        <a href="https://arxiv.org/abs/2606.06468" target="_blank" rel="noopener">arXiv</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="highlights">
+    <h2>highlights</h2>
+
+    <div class="row">
+      <div class="date">2022, 2023</div>
+      <div>Two silver medals at the <a href="https://www.imo-official.org/" target="_blank" rel="noopener">International Mathematical Olympiad (IMO)</a> representing Portugal.</div>
+    </div>
+
+    <div class="row">
+      <div class="date">2024, 2025</div>
+      <div>Twice awarded Princeton's <strong>Shapiro Prize</strong> for academic excellence.</div>
+    </div>
+
+    <div class="row">
+      <div class="date">2023, 2024</div>
+      <div>Two-time overall winner of the <strong>Princeton Computer Science Contest</strong> (COSCON).</div>
+    </div>
+
+    <div class="row">
+      <div class="date">2023</div>
+      <div>Best Freshman Team Prize at the <strong>ICPC Greater NY Regional Contest</strong>.</div>
+    </div>
+
+    <div class="row">
+      <div class="date">2024</div>
+      <div>2nd place overall at the <strong>AGI House Robotics Hackathon</strong> for a drone path-planning algorithm.</div>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2026 Rodrigo Porto.
+  </footer>
+</div>
 </body>
 </html>
