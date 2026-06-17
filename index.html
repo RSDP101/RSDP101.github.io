@@ -156,6 +156,27 @@
       text-decoration: none;
     }
 
+    .substack-callout {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-top: 1.5rem;
+      padding: 0.9rem 1.1rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-alt);
+      font-size: 0.97rem;
+      color: var(--text-soft);
+    }
+    .substack-callout i {
+      color: var(--link);
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .substack-callout a {
+      font-weight: 600;
+    }
+
     .highlights .row {
       display: grid;
       grid-template-columns: 7rem 1fr;
@@ -233,6 +254,11 @@
     </div>
     <img class="profile-photo" src="assets/img/rodrigo.png" alt="Rodrigo Porto" loading="eager">
   </div>
+
+  <aside class="substack-callout">
+    <i class="fa-solid fa-feather"></i>
+    <span>I just started a Substack &mdash; follow along at <a href="https://substack.com/@rodporto" target="_blank" rel="noopener">substack.com/@rodporto</a>.</span>
+  </aside>
 
   <section>
     <h2>selected publications</h2>
