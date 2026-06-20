@@ -259,6 +259,60 @@ article.post hr {
   border-top: 1px solid var(--border);
   margin: 2rem 0;
 }
+
+/* Math paper environments */
+article.post .abstract,
+article.post .theorem,
+article.post .lemma,
+article.post .corollary,
+article.post .proposition,
+article.post .definition,
+article.post .proof {
+  border-left: 3px solid var(--border);
+  padding: 0.6rem 1rem 0.6rem 1rem;
+  margin: 1.1rem 0;
+  background: var(--bg-alt);
+  border-radius: 0 4px 4px 0;
+}
+article.post .abstract { border-left-color: var(--muted); font-size: 0.96rem; }
+article.post .theorem,
+article.post .corollary,
+article.post .proposition { border-left-color: var(--link); }
+article.post .lemma { border-left-color: #7a9cc6; }
+article.post .definition { border-left-color: var(--muted); background: transparent; padding-left: 1rem; }
+article.post .proof {
+  background: transparent;
+  border-left: none;
+  padding: 0;
+  margin: 1rem 0;
+  font-size: 0.97rem;
+}
+article.post .env-label {
+  font-weight: 700;
+  margin-right: 0.4rem;
+}
+article.post .env-label::after { content: "."; }
+article.post .proof .env-label::after { content: "."; }
+article.post .proof::after {
+  content: " \25A0";
+  color: var(--muted);
+}
+
+/* KaTeX display blocks: a touch more breathing room */
+article.post .katex-display {
+  margin: 1rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+article.post .katex { font-size: 1.02em; }
+
+/* Bibliography */
+article.post .bibliography {
+  font-size: 0.92rem;
+  color: var(--text-soft);
+}
+article.post .bibliography ol { padding-left: 1.4rem; }
+article.post .bibliography li { margin: 0.45rem 0; }
 article.post table {
   border-collapse: collapse;
   margin: 1rem 0;

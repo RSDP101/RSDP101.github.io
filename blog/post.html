@@ -7,6 +7,7 @@
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../assets/css/site.css">
   <script>
     (function() {
@@ -44,6 +45,8 @@
 
 <script src="../assets/js/theme.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 <script>
   (function() {
     var postEl = document.getElementById('post');
@@ -55,40 +58,87 @@
       return;
     }
 
-    var meta = null;
+    var KATEX_MACROS = {
+      "\\RR": "\\mathbb{R}", "\\rr": "\\mathbb{R}",
+      "\\NN": "\\mathbb{N}", "\\nn": "\\mathbb{N}",
+      "\\ZZ": "\\mathbb{Z}", "\\zz": "\\mathbb{Z}",
+      "\\CC": "\\mathbb{C}", "\\cc": "\\mathbb{C}",
+      "\\QQ": "\\mathbb{Q}", "\\qq": "\\mathbb{Q}",
+      "\\PP": "\\mathbb{P}", "\\pp": "\\mathbb{P}",
+      "\\EE": "\\mathbb{E}", "\\ee": "\\mathbb{E}",
+      "\\FF": "\\mathbb{F}", "\\ff": "\\mathbb{F}",
+      "\\DD": "\\mathbb{D}", "\\dd": "\\mathbb{D}"
+    };
 
-    Promise.all([
-      fetch('posts.json', { cache: 'no-cache' }).then(function(r) { return r.ok ? r.json() : []; }),
-      fetch('posts/' + slug + '.md', { cache: 'no-cache' }).then(function(r) {
-        if (!r.ok) throw new Error('Post not found');
-        return r.text();
-      })
-    ]).then(function(results) {
-      var posts = results[0];
-      var md = results[1];
-      meta = posts.find(function(p) { return p.slug === slug; }) || {};
+    // Protect math from markdown parser: replace $$...$$ and $...$ with placeholders
+    // before marked.parse runs, then restore after.
+    function renderWithMath(md) {
+      var stash = [];
+      var placeholder = function(i) { return '@@MATH' + i + '@@'; };
+
+      // $$ ... $$ (display, possibly multiline)
+      md = md.replace(/\$\$([\s\S]+?)\$\$/g, function(_, body) {
+        stash.push({ display: true, body: body.trim() });
+        return '\n\n' + placeholder(stash.length - 1) + '\n\n';
+      });
+      // $ ... $ (inline, single line, no leading/trailing space inside)
+      md = md.replace(/\$([^\$\n]+?)\$/g, function(_, body) {
+        stash.push({ display: false, body: body.trim() });
+        return placeholder(stash.length - 1);
+      });
 
       var html = marked.parse(md, { gfm: true, breaks: false });
-      var titleStr = meta.title ? escapeHtml(meta.title) : escapeHtml(slug);
-      document.title = (meta.title || slug) + ' — Rodrigo Porto';
 
-      var dateStr = '';
-      if (meta.date) {
-        var d = new Date(meta.date + 'T00:00:00Z');
-        if (!isNaN(d)) {
-          dateStr = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(d);
-        } else {
-          dateStr = meta.date;
+      html = html.replace(/@@MATH(\d+)@@/g, function(_, i) {
+        var m = stash[+i];
+        try {
+          return katex.renderToString(m.body, {
+            displayMode: m.display,
+            throwOnError: false,
+            macros: KATEX_MACROS,
+            trust: true,
+            strict: 'ignore'
+          });
+        } catch (e) {
+          return '<code>' + escapeHtml((m.display ? '$$' : '$') + m.body + (m.display ? '$$' : '$')) + '</code>';
         }
-      }
+      });
+      return html;
+    }
 
-      postEl.innerHTML =
-        (meta.title ? '<h1>' + titleStr + '</h1>' : '') +
-        (dateStr ? '<div class="post-meta">' + escapeHtml(dateStr) + '</div>' : '') +
-        html;
-    }).catch(function(err) {
-      postEl.innerHTML = '<p style="color: var(--muted);">Could not load post (' + escapeHtml(err.message) + '). <a href="./">See all posts</a>.</p>';
-    });
+    function whenReady() {
+      if (typeof katex === 'undefined') { setTimeout(whenReady, 30); return; }
+
+      Promise.all([
+        fetch('posts.json', { cache: 'no-cache' }).then(function(r) { return r.ok ? r.json() : []; }),
+        fetch('posts/' + slug + '.md', { cache: 'no-cache' }).then(function(r) {
+          if (!r.ok) throw new Error('Post not found');
+          return r.text();
+        })
+      ]).then(function(results) {
+        var posts = results[0];
+        var md = results[1];
+        var meta = posts.find(function(p) { return p.slug === slug; }) || {};
+
+        var html = renderWithMath(md);
+        var titleStr = meta.title ? escapeHtml(meta.title) : escapeHtml(slug);
+        document.title = (meta.title || slug) + ' — Rodrigo Porto';
+
+        var dateStr = '';
+        if (meta.date) {
+          var d = new Date(meta.date + 'T00:00:00Z');
+          dateStr = isNaN(d) ? meta.date : new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(d);
+        }
+
+        postEl.innerHTML =
+          (meta.title ? '<h1>' + titleStr + '</h1>' : '') +
+          (dateStr ? '<div class="post-meta">' + escapeHtml(dateStr) + '</div>' : '') +
+          html;
+      }).catch(function(err) {
+        postEl.innerHTML = '<p style="color: var(--muted);">Could not load post (' + escapeHtml(err.message) + '). <a href="./">See all posts</a>.</p>';
+      });
+    }
+    whenReady();
 
     function escapeHtml(s) {
       return String(s).replace(/[&<>"']/g, function(c) {

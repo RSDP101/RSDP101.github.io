@@ -1,5 +1,11 @@
 [
   {
+    "slug": "universal-approximation-1-layer",
+    "title": "A self-contained proof of universal approximation",
+    "date": "2026-06-20",
+    "summary": "An elementary proof of the universal approximation theorem for single-hidden-layer networks, built from the Fejér theorem and Stone–Weierstrass instead of Hahn–Banach."
+  },
+  {
     "slug": "welcome-to-the-blog",
     "title": "Welcome to the blog",
     "date": "2026-06-16",
