@@ -17,12 +17,12 @@
   --muted: #8a93a8;
   --link: #7eb6ff;
   --link-hover: #a9cdff;
-  --border: #2a3550;
-  --bg: #1a2540;
-  --bg-alt: #22304f;
-  --pub-bg: #1f2b48;
-  --code-bg: #131c33;
-  --code-border: #2a3550;
+  --border: #262830;
+  --bg: #0a0a0c;
+  --bg-alt: #15161a;
+  --pub-bg: #111215;
+  --code-bg: #0d0e11;
+  --code-border: #262830;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
