@@ -6,6 +6,9 @@
   <title>Rodrigo Porto</title>
   <meta name="description" content="Rodrigo Porto. Princeton Math '27. Research on LLMs for mathematics.">
   <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css">
   <link rel="stylesheet" href="assets/css/site.css">
@@ -23,17 +26,12 @@
 </head>
 <body>
 <div class="container">
-  <nav class="top">
-    <div class="left">
-      <a href="./" class="active">home</a>
-      <a href="blog/">blog</a>
+  <header class="site-header">
+    <a href="./" class="site-brand">rodrigo porto</a>
+    <div class="header-right">
+      <button id="theme-toggle" class="icon-button" title="Toggle light/dark mode" aria-label="Toggle light/dark mode"><i class="fa-solid fa-moon"></i></button>
     </div>
-    <a href="mailto:rodrigaosdp@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
-    <a href="https://github.com/RSDP101" title="GitHub" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i></a>
-    <a href="https://scholar.google.com/citations?user=V8AUv-gAAAAJ&amp;hl=en" title="Google Scholar" target="_blank" rel="noopener"><i class="ai ai-google-scholar"></i></a>
-    <a href="https://www.linkedin.com/in/rodrigo-porto-760150169" title="LinkedIn" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i></a>
-    <button id="theme-toggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode"><i class="fa-solid fa-moon"></i></button>
-  </nav>
+  </header>
 
   <div class="profile-row">
     <div>
@@ -59,14 +57,14 @@
   </div>
 
   <section>
-    <h2>selected publications</h2>
+    <h2>Selected publications</h2>
 
     <div class="pub">
       <img class="preview" src="assets/img/pub-goedel-architect.png" alt="Goedel-Architect blueprint generation and refinement pipeline">
-      <div>
+      <div class="pub-body">
+        <div class="venue">ICML 2026 AI4Math Workshop</div>
         <div class="title">Goedel-Architect: Streamlining Formal Theorem Proving with Blueprint Generation and Refinement</div>
         <div class="authors">Jui-Hui Chung, Ziyang Cai, Zihao Li, Qishuo Yin, Rohit Agarwal, Simon Park, <span class="me">Rodrigo Porto</span>, Narutatsu Ri, Ziran Yang, Shange Tang, Xingyu Dang, Hongzhou Lin, Mengdi Wang, Danqi Chen, Chi Jin, Liam H. Fowl, Sanjeev Arora</div>
-        <div class="venue">ICML 2026 AI4Math Workshop</div>
         <div class="links">
           <a href="https://arxiv.org/abs/2606.06468" target="_blank" rel="noopener">arXiv</a>
         </div>
@@ -75,10 +73,10 @@
 
     <div class="pub">
       <img class="preview" src="assets/img/pub-cognitive-well.png" alt="Cost-performance Pareto frontier">
-      <div>
+      <div class="pub-body">
+        <div class="venue">ICML 2026 AI4Math Workshop</div>
         <div class="title">Escaping the Cognitive Well: Efficient Competition Math with Off-the-Shelf Models</div>
         <div class="authors">Xingyu Dang, Rohit Agarwal, <span class="me">Rodrigo Porto</span>, Anirudh Goyal, Liam H. Fowl, Sanjeev Arora</div>
-        <div class="venue">ICML 2026 AI4Math Workshop</div>
         <div class="links">
           <a href="https://arxiv.org/abs/2602.16793" target="_blank" rel="noopener">arXiv</a>
         </div>
@@ -87,7 +85,7 @@
   </section>
 
   <section class="highlights">
-    <h2>highlights</h2>
+    <h2>Highlights</h2>
 
     <div class="row">
       <div class="date">2024, 2025</div>
@@ -115,6 +113,17 @@
     </div>
   </section>
 
+  <footer class="page-footer">
+    <div class="footer-left">Rodrigo Porto &mdash; Princeton Math '27</div>
+    <div class="nav-buttons">
+      <a href="./" class="nav-button active">Home</a>
+      <a href="blog/" class="nav-button">Blog</a>
+      <a href="mailto:rodrigaosdp@gmail.com" class="nav-button"><i class="fa-solid fa-envelope"></i> Email</a>
+      <a href="https://github.com/RSDP101" target="_blank" rel="noopener" class="nav-button"><i class="fa-brands fa-github"></i> GitHub</a>
+      <a href="https://scholar.google.com/citations?user=V8AUv-gAAAAJ&amp;hl=en" target="_blank" rel="noopener" class="nav-button"><i class="ai ai-google-scholar"></i> Scholar</a>
+      <a href="https://www.linkedin.com/in/rodrigo-porto-760150169" target="_blank" rel="noopener" class="nav-button"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+    </div>
+  </footer>
 </div>
 
 <script src="assets/js/theme.js"></script>

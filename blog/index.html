@@ -6,6 +6,9 @@
   <title>Blog &mdash; Rodrigo Porto</title>
   <meta name="description" content="Writing by Rodrigo Porto on LLMs, mathematics, and adjacent ideas.">
   <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css">
   <link rel="stylesheet" href="../assets/css/site.css">
@@ -23,27 +26,33 @@
 </head>
 <body>
 <div class="container">
-  <nav class="top">
-    <div class="left">
-      <a href="../">home</a>
-      <a href="./" class="active">blog</a>
+  <header class="site-header">
+    <a href="../" class="site-brand">rodrigo porto</a>
+    <div class="header-right">
+      <button id="theme-toggle" class="icon-button" title="Toggle light/dark mode" aria-label="Toggle light/dark mode"><i class="fa-solid fa-moon"></i></button>
     </div>
-    <a href="mailto:rodrigaosdp@gmail.com" title="Email"><i class="fa-solid fa-envelope"></i></a>
-    <a href="https://github.com/RSDP101" title="GitHub" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i></a>
-    <a href="https://scholar.google.com/citations?user=V8AUv-gAAAAJ&amp;hl=en" title="Google Scholar" target="_blank" rel="noopener"><i class="ai ai-google-scholar"></i></a>
-    <a href="https://www.linkedin.com/in/rodrigo-porto-760150169" title="LinkedIn" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i></a>
-    <button id="theme-toggle" title="Toggle light/dark mode" aria-label="Toggle light/dark mode"><i class="fa-solid fa-moon"></i></button>
-  </nav>
+  </header>
 
   <header>
-    <h1 class="name">blog</h1>
+    <h1 class="name">Blog</h1>
     <p class="desc">Notes on LLMs, mathematics, and adjacent ideas.</p>
   </header>
 
-  <ul id="post-list" class="post-list">
-    <li class="post-empty">Loading posts&hellip;</li>
-  </ul>
+  <div id="post-list" style="margin-top: 1.5rem;">
+    <p style="color: var(--muted);">Loading posts&hellip;</p>
+  </div>
 
+  <footer class="page-footer">
+    <div class="footer-left">Rodrigo Porto &mdash; Princeton Math '27</div>
+    <div class="nav-buttons">
+      <a href="../" class="nav-button">Home</a>
+      <a href="./" class="nav-button active">Blog</a>
+      <a href="mailto:rodrigaosdp@gmail.com" class="nav-button"><i class="fa-solid fa-envelope"></i> Email</a>
+      <a href="https://github.com/RSDP101" target="_blank" rel="noopener" class="nav-button"><i class="fa-brands fa-github"></i> GitHub</a>
+      <a href="https://scholar.google.com/citations?user=V8AUv-gAAAAJ&amp;hl=en" target="_blank" rel="noopener" class="nav-button"><i class="ai ai-google-scholar"></i> Scholar</a>
+      <a href="https://www.linkedin.com/in/rodrigo-porto-760150169" target="_blank" rel="noopener" class="nav-button"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+    </div>
+  </footer>
 </div>
 
 <script src="../assets/js/theme.js"></script>
@@ -58,22 +67,22 @@
       .then(function(posts) {
         posts.sort(function(a, b) { return (b.date || '').localeCompare(a.date || ''); });
         if (!posts.length) {
-          listEl.innerHTML = '<li class="post-empty">No posts yet.</li>';
+          listEl.innerHTML = '<p style="color: var(--muted);">No posts yet.</p>';
           return;
         }
-        var fmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        var fmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long' });
         listEl.innerHTML = posts.map(function(p) {
-          var d = new Date(p.date + 'T00:00:00Z');
+          var d = new Date((p.date || '') + 'T00:00:00Z');
           var dateStr = isNaN(d) ? (p.date || '') : fmt.format(d);
-          return '<li>' +
-            '<div class="post-title"><a href="post.html?slug=' + encodeURIComponent(p.slug) + '">' + escapeHtml(p.title) + '</a></div>' +
-            '<div class="post-meta">' + escapeHtml(dateStr) + '</div>' +
-            (p.summary ? '<div class="post-summary">' + escapeHtml(p.summary) + '</div>' : '') +
-          '</li>';
+          return '<a class="card" href="post.html?slug=' + encodeURIComponent(p.slug) + '">' +
+            '<div class="card-date">' + escapeHtml(dateStr) + '</div>' +
+            '<div class="card-title">' + escapeHtml(p.title) + '</div>' +
+            (p.summary ? '<p class="card-excerpt">' + escapeHtml(p.summary) + '</p>' : '') +
+          '</a>';
         }).join('');
       })
       .catch(function(err) {
-        listEl.innerHTML = '<li class="post-empty">Could not load posts (' + escapeHtml(err.message) + ').</li>';
+        listEl.innerHTML = '<p style="color: var(--muted);">Could not load posts (' + escapeHtml(err.message) + ').</p>';
       });
 
     function escapeHtml(s) {
