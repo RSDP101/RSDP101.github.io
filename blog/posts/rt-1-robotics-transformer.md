@@ -3,20 +3,13 @@ In this post, I plan to provide a deep dive into one of the coolest and most imp
 
 What is nice about this paper is the level of generalizabilty that their model learns. It can generalizes task completion for unseen objects, backgrounds and instructions in the training data and is very efficient (only a few Million parameters which allows it to run in around at ~3Hz i.e. 3 actions per second).
 
-To get a better sense of how the model owrks 
+To get a better sense of how the model works, let's review each component of the paper: the research-question, data, model, training and the evaluation results. 
 
 ## 1. The problem it's trying to solve
 
-Vision and language had their "just train one big model on everything" moment years ago. Robotics hadn't. The usual recipe was narrow: collect data for *one* task, train a policy for *that* task, repeat. Every new skill meant starting over.
+Basically, the problem the paper addresses is: "Is it possible to design robotic policies from vision-language backbones? And how generalizable are they?" 
 
-The authors ask a pointed question: **can we train a single, large, multi-task backbone on a wide variety of robot data, and have it generalize zero-shot to new tasks, objects, and environments** — the way a language model generalizes to a prompt it has never seen?
-
-Doing that well requires winning on two fronts at once, and they're in tension:
-
-1. **The data** has to be both large *and* broad — many tasks, many objects, many scenes — and well-connected enough that the model can interpolate between them.
-2. **The model** has to be high-capacity (to absorb all that), *and* fast enough to actually run on a robot in real time. A giant Transformer that thinks for two seconds per step is useless on hardware that needs to react several times a second.
-
-Most of RT-1's design choices fall out of holding those two requirements together.
+To answer these, it's important to understand what kind of behavior is expected from robotic policies look like in practice, i.e. what does the data look like.
 
 ---
 
@@ -45,13 +38,11 @@ The robot doesn't get to see the whole future; at each step it decides based on 
 
 $$\pi\big(\cdot \mid i,\; \{x_{t-5}, \dots, x_t\}\big)$$
 
-Read this out loud: "given the instruction $i$ and the six most recent images, how likely is each possible action?" That distribution $\pi$ — the **policy** — is what the Transformer parametrizes. Everything below is just *how* we turn six pictures and a sentence into that distribution.
-
 ---
 
 ## 3. The model:
 
-This is full architecture used to produce the action predictions. 
+Given the data above, we can process them through a pipeline to output concrete robot decisions. This is full architecture used to produce these predictions. 
 <div style="overflow-x: auto; max-width: 100%;">
   <img src="posts/assets/RT-1/architecture.png" alt="RT-1 architecture: instruction and 6 images flow through USE, FiLM EfficientNet-B3, TokenLearner, Transformer to an 11-D action" style="height: 460px; max-width: none; display: block;">
 </div>
@@ -75,29 +66,27 @@ But instead of just using the vanilla EfficientNet, the paper introduces **FiLM*
 
 $$\text{FiLM}(x) = (1 + \gamma)\,x + \beta,$$
 
-where $\gamma$ and $\beta$ are produced from the instruction embedding. *Why it's here:* this is **early fusion** of language into vision. Instead of computing generic visual features and only *later* asking "okay, what did the instruction want?", the instruction reaches in and biases the feature extractor itself — so a feature map computed under *"pick the apple"* can already emphasize the apple. (This is a real departure from a model like Gato, which computes image tokens with no knowledge of the language at all.)
-
-There's a subtle and genuinely clever detail here that I want to flag, because it's exactly the kind of thing that makes or breaks a system like this — see **The clever bits** below.
+where $\gamma$ and $\beta$ are produced from the instruction embedding. 
+*Why it's here:* the FiLM EfficientNet-B3 is suppose to provide an **early fusion** of language with vision. The text instruction reaches in and biases the feature extractor itself — so a feature map computed under *"pick the apple"* can already emphasize the apple.
 
 ### 3.4 **TokenLearner — the compression step.** 
-Eighty-one tokens per image, times six images, is a lot for a Transformer to chew on every 100 milliseconds. **TokenLearner** is a small attention module (~34K parameters) that learns to **soft-select the informative tokens**, squeezing 81 tokens down to just **8** per image.
+For latency-bounded systems like robots, Eighty-one tokens per image, times six images, is a little too much for a Transformer to process very quickly. **TokenLearner** is a small attention module (~34K parameters) that learns to **soft-select the informative tokens**, squeezing 81 tokens down to just **8** per image.
 
 <div style="overflow-x: auto; max-width: 100%;">
   <img src="posts/assets/RT-1/tokenlearner.png" alt="TokenLearner mechanism: learns 8 spatial attention maps over the 9x9 grid, weights and pools the feature map to produce 8 tokens" style="height: 420px; max-width: none; display: block;">
 </div>
 
-*How it works:* TokenLearner learns **8 spatial attention maps** over the $9 \times 9$ grid (a couple of convolutions followed by a spatial softmax). Each map is a soft mask saying "this region matters for token #k." It then **multiplies the feature map by each mask and averages over space**, collapsing each masked grid into one 512-dim vector. Eight masks → eight tokens.
+*How it works:* TokenLearner learns **8 spatial attention maps** over the $9 \times 9$ grid (a couple of convolutions followed by a spatial softmax). It then **multiplies the feature map by each mask and averages over space**, collapsing each masked grid into one 512-dim vector. Eight masks → eight tokens.
 
-*Why it's here:* purely for **speed**. Fewer tokens means the Transformer has less to attend over, and that's a big part of how a Transformer ends up running in real time on a robot.
+*Why it's here:* purely for **speed**. Fewer tokens means the Transformer has less to attend over, and that's crucial for allowing robots perform in real-time
 
 **Concatenate + positional encoding.** Eight tokens per image across six frames gives $6 \times 8 = 48$ tokens, each $512$-dimensional — a $48 \times 512$ sequence. A positional encoding is added so the Transformer knows *which frame and which slot* each token came from (without it, the sequence is just an unordered bag).
 
 ### 3.5 **Transformer.** 
 A **decoder-only Transformer**, 8 self-attention layers, ~19M parameters. TokenLearner already mixed information *spatially within* each frame; the Transformer's job is to mix information **across tokens and across time** - to reason about how the scene is changing over the six-frame history and what to do next. The sequence shape stays $48 \times 512$ through every layer.
 
-Each self-attention layer can only relate tokens *pairwise in one hop*. It makes sense to stack them because it lets the model build up **multi-step, relational reasoning**: an early layer might line up the gripper with an object across frames, a later layer might use that to decide a direction of motion. For example, depth can be used to describe something like "follow this object and move toward it." 
+Each self-attention layer can only relate tokens *pairwise in one hop*. It makes sense to stack them because it lets the model build up **multi-step, relational reasoning**: an early layer might line up the gripper with an object across frames, a later layer might use that to decide a direction of motion. 
 
-The transformer architecture here is basically an decoder only architecutre 
 ### 3.6 **Action output.** 
 Finally the Transformer emits the action. Each action is **11-dimensional**, and — here's the move — **each dimension is discretized into 256 bins**. So the output is effectively an $11 \times 256$ block of logits: eleven little 256-way classification problems. The eleven dimensions are:
 
@@ -105,7 +94,7 @@ Finally the Transformer emits the action. Each action is **11-dimensional**, and
 - **3 for the base:** $x, y$, yaw
 - **1 mode:** switch between *controlling the arm*, *controlling the base*, or *terminating* the episode
 
-The whole thing is **35M parameters**, runs **closed-loop at 3 Hz**, with **under 100 ms** of inference per step. That real-time budget is not a footnote — it's a hard constraint that shaped the architecture, met with two tricks: TokenLearner cuts inference cost ~2.4×, and reusing already-computed image tokens across overlapping history windows buys another ~1.7×.
+The whole model is **35M parameters**, runs **closed-loop at 3 Hz**, with **under 100 ms** of inference per step. 
 
 ---
 
@@ -117,7 +106,7 @@ RT-1 is trained by **imitation learning** on timesteps sampled from several epis
   <img src="posts/assets/RT-1/training.png" alt="RT-1 training pipeline: 130K demos, USE frozen, FiLM-EfficientNet/TokenLearner/Transformer trained, cross-entropy loss" style="height: 420px; max-width: none; display: block;">
 </div>
 
-Concretely, we want the policy to assign **high probability on the action the robot took**. Over the whole dataset $\mathcal{D}$ of $N$ episodes, we minimize the **negative log-likelihood** of the demonstrated actions:
+Concretely, we want the policy to assign **high probability to the action took by the teloperated robot**. Over the whole dataset $\mathcal{D}$ of $N$ episodes, we minimize the **negative log-likelihood** of the demonstrated actions:
 
 $$\theta^{*} = \arg\min_{\theta} \sum_{n=1}^{N} \sum_{t=0}^{T} -\log \pi_{\theta}\big(a_t^{(n)} \mid i^{(n)},\, x_{t-5:t}^{(n)}\big)$$
 
@@ -128,9 +117,12 @@ To unpack what each symbol means:
 - $\pi_\theta(a_t^{(n)} \mid i^{(n)}, x_{t-5:t}^{(n)})$ is the probability the model assigns to **the human's action** $a_t^{(n)}$, given that episode's instruction and the six frames leading up to step $t$.
 - $-\log(\cdot)$ is the standard "surprise" penalty: if the model already thought the right action was likely, the penalty is tiny; if it was caught off guard, the penalty is large.
 
-Equivalently, in expectation over the data, we're minimizing the **expected negative log-probability of choosing the right action**:
+Equivalently, over the data, we're minimizing the **expected negative log-probability of choosing the right action**:
 
 $$\mathbb{E}_{(i,x,a)\sim \mathcal{D}}\big[-\log \pi_{\theta}(a \mid x, i)\big]$$
+
+The negative-log-probability of choosing the right action is high when we're very uncertain over the correct box, and low when the model is sharply confident on the correct action. 
+
 
 **Why this makes sense, and the intuition for the loop** 
 
@@ -139,8 +131,8 @@ The action factorizes into 11 independent 256-way bins, so this single loss corr
 The training loop is then basically: 
 - sample a batch of (instruction, 6-frame history, action) tuples
 - Run through the model and predict the 11 action distributions 
-- score them against the demonstrated bins.
-- backprop through each example. 
+- score them against the demonstrated bins and sum over the 11 bins.
+- backprop the loss through the example. 
 
 ---
 
